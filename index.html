@@ -3,332 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Circuitos Elétricos</title>
+    <title>Eletricista Pro: O Desafio Residencial</title>
     <style>
+        :root {
+            --bg-dark: #121214;
+            --panel-bg: #1e1e24;
+            --border-color: #33333d;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-yellow: #eab308;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
+
         .container {
             width: 100%;
-            max-width: 700px;
-            background: #1e1e1e;
-            padding: 25px;
+            max-width: 850px;
+            background: var(--panel-bg);
+            padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
         }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
         h1 {
-            color: #4CAF50;
-            text-align: center;
-            margin-top: 0;
-            font-size: 24px;
+            color: var(--accent-green);
+            margin: 0;
+            font-size: 20px;
         }
+
+        .hud-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .stat-box {
+            background: #27272a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Mission Panel */
+        .mission-panel {
+            background: #25252d;
+            border-left: 4px solid var(--accent-blue);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* Canvas Arena */
         .canvas-container {
             position: relative;
             width: 100%;
-            height: 250px;
-            background: #111;
+            height: 300px;
+            background: #09090b;
             border-radius: 8px;
-            border: 2px solid #444;
-            margin-bottom: 20px;
+            border: 2px solid var(--border-color);
+            margin-bottom: 15px;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         canvas {
             display: block;
         }
+
+        /* Controls Grid */
         .controls-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
         }
+
         .control-group {
-            background: #2a2a2a;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #444;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 14px;
-            color: #bbb;
-        }
-        select, input, button {
-            width: 100%;
+            background: #27272a;
             padding: 10px;
             border-radius: 6px;
-            border: 1px solid #555;
-            background: #333;
-            color: #fff;
-            font-size: 15px;
-            box-sizing: border-box;
+            border: 1px solid var(--border-color);
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: var(--text-muted);
             font-weight: bold;
-            cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #52525b;
+            background: #18181b;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border-radius: 6px;
             border: none;
-            transition: background 0.2s;
-            grid-column: span 2;
-            margin-top: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
         }
+
         button:hover {
-            background-color: #45a049;
+            opacity: 0.9;
         }
+
+        .btn-test {
+            background-color: var(--accent-green);
+            color: #fff;
+        }
+
+        .btn-action {
+            background-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        /* Console / Feedback */
         .console {
-            background-color: #000;
-            color: #00ff66;
-            padding: 15px;
-            border-radius: 8px;
+            background-color: #09090b;
+            color: #38bdf8;
+            padding: 12px;
+            border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             text-align: left;
-            min-height: 80px;
-            max-height: 120px;
+            min-height: 50px;
+            max-height: 80px;
             overflow-y: auto;
-            border: 1px solid #333;
-            font-size: 14px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
             white-space: pre-wrap;
+            margin-top: 10px;
         }
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .badge-off { background: #555; color: #fff; }
-        .badge-on { background: #ffeb3b; color: #000; }
-        .badge-danger { background: #f44336; color: #fff; }
+
+        .danger-text { color: var(--accent-red); }
+        .success-text { color: var(--accent-green); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Laboratório de Eletricidade & Lei de Ohm</h1>
-    
-    <div style="text-align: center;">
-        <span id="statusBadge" class="badge-badge badge-off">CIRCUITO DESLIGADO</span>
+    <header>
+        <h1>⚡ Eletricista Pro: Instalações Residenciais</h1>
+        <div class="hud-stats">
+            <div class="stat-box">Fase: <span id="faseAtual">1</span>/3</div>
+            <div class="stat-box">Pontos: <span id="pontos">0</span></div>
+        </div>
+    </header>
+
+    <!-- Missão / Objetivo -->
+    <div id="missaoBox" class="mission-panel">
+        <strong>Missão 1:</strong> Monte a infraestrutura básica de um circuito de iluminação simples em 127V. Selecione o Disjuntor correto, a Bitola do cabo fase (Vermelho), neutro (Azul) e terra (Verde-Amarelo), além do retorno (Amarelo).
     </div>
 
-    <!-- Área Visual do Circuito -->
+    <!-- Canvas de Desenho Técnico Realista -->
     <div class="canvas-container">
-        <canvas id="circuitCanvas" width="650" height="230"></canvas>
+        <canvas id="circuitCanvas" width="800" height="280"></canvas>
     </div>
 
-    <!-- Controles -->
+    <!-- Controles de Projeto -->
     <div class="controls-grid">
         <div class="control-group">
-            <label for="bateriaSelect">Bateria (Fonte):</label>
-            <select id="bateriaSelect" onchange="atualizarSimulacao()">
-                <option value="12">12V (Padrão)</option>
-                <option value="24">24V (Alta Potência)</option>
-                <option value="5">5V (Baixa Tensão)</option>
+            <label for="disjuntorSelect">Disjuntor Geral:</label>
+            <select id="disjuntorSelect">
+                <option value="monofasico_10a">Monofásico 10A (DIN)</option>
+                <option value="monofasico_16a">Monofásico 16A (DIN)</option>
+                <option value="monofasico_20a">Monofásico 20A (DIN)</option>
+                <option value="monofasico_32a">Monofásico 32A (DIN)</option>
+                <option value="trifasico_50a">Trifásico 50A (Inadequado)</option>
             </select>
         </div>
 
         <div class="control-group">
-            <label for="resistorSelect">Resistor:</label>
-            <select id="resistorSelect" onchange="atualizarSimulacao()">
-                <option value="0">0 Ohms (Curto-Circuito!)</option>
-                <option value="5">5 Ohms</option>
-                <option value="10" selected>10 Ohms</option>
-                <option value="20">20 Ohms</option>
-                <option value="50">50 Ohms (Forte Restrição)</option>
+            <label for="caboSelect">Bitola dos Condutores:</label>
+            <select id="caboSelect">
+                <option value="1.5">1,5 mm² (Iluminação)</option>
+                <option value="2.5">2,5 mm² (Tomadas)</option>
+                <option value="4.0">4,0 mm² (Chuveiro/Pesado)</option>
+                <option value="0.5">0,5 mm² (Muito Fino - Risco!)</option>
             </select>
         </div>
 
-        <button id="btnInterruptor" onclick="alternarInterruptor()">Ligar / Desligar Interruptor</button>
+        <div class="control-group">
+            <label for="tensaoSelect">Tensão da Rede:</label>
+            <select id="tensaoSelect">
+                <option value="127">127V (Fase + Neutro)</option>
+                <option value="220">220V (Fase + Fase)</option>
+            </select>
+        </div>
     </div>
 
-    <!-- Log / Terminal -->
-    <div id="gameLog" class="console">Sistema pronto. Configure os componentes e feche o interruptor.</div>
+    <div class="action-buttons">
+        <button class="btn-test" onclick="testarInstalacao()">Testar Circuito (Energizar)</button>
+        <button class="btn-action" onclick="proximaFase()" id="btnProxima" style="display:none;">Avançar de Fase ➔</button>
+    </div>
+
+    <!-- Terminal de Diagnóstico -->
+    <div id="gameLog" class="console">Sistema pronto. Selecione os componentes corretos baseados na NBR 5410 e clique em Testar Circuito.</div>
 </div>
 
 <script>
-    class Fonte {
-        constructor(tensao) { this.tensao = tensao; }
-    }
-
-    class Interruptor {
-        constructor() { this.ligado = false; }
-        alternar() { this.ligado = !this.ligado; }
-    }
-
-    class Resistor {
-        constructor(resistencia) { this.resistencia = resistencia; }
-    }
-
-    class Lampada {
-        constructor(tensaoNominal) {
-            this.tensaoNominal = tensaoNominal;
-            this.acesa = false;
-            this.queimada = false;
-        }
-
-        calcular(fonte, interruptor, resistor) {
-            this.acesa = false;
-            this.queimada = false;
-
-            if (!interruptor.ligado) {
-                return { texto: "A lâmpada está apagada (circuito aberto).", estado: "off", tensao: 0 };
-            }
-
-            if (resistor.resistencia === 0) {
-                this.queimada = true;
-                return { texto: "❌ PERIGO: Curto-circuito! Sem resistor, a corrente disparou e a lâmpada queimou.", estado: "danger", tensao: fonte.tensao };
-            }
-
-            let corrente = fonte.tensao / resistor.resistencia;
-            let tensaoNaLampada = corrente * 10;
-
-            if (tensaoNaLampada > this.tensaoNominal * 1.2) {
-                this.queimada = true;
-                return { texto: `💥 A lâmpada queimou! Tensão muito alta: ${tensaoNaLampada.toFixed(1)}V (Máx suportada: ${(this.tensaoNominal*1.2).toFixed(1)}V).`, estado: "danger", tensao: tensaoNaLampada };
-            } else if (tensaoNaLampada < this.tensaoNominal * 0.8) {
-                return { texto: `⚠️ A lâmpada está fraca. Tensão insuficiente: ${tensaoNaLampada.toFixed(1)}V.`, estado: "weak", tensao: tensaoNaLampada };
-            } else {
-                this.acesa = true;
-                return { texto: `✨ Brilho perfeito! Tensão ideal na lâmpada: ${tensaoNaLampada.toFixed(1)}V.`, estado: "on", tensao: tensaoNaLampada };
-            }
-        }
-    }
-
-    // Instâncias do jogo
-    let bateria = new Fonte(12);
-    let chave = new Interruptor();
-    let resistorObj = new Resistor(10);
-    let lampada = new Lampada(12);
+    // Estado do Jogo
+    let jogo = {
+        fase: 1,
+        pontos: 0,
+        concluido: false
+    };
 
     const canvas = document.getElementById('circuitCanvas');
     const ctx = canvas.getContext('2d');
 
-    function alternarInterruptor() {
-        chave.alternar();
-        atualizarSimulacao();
-    }
-
-    function atualizarSimulacao() {
-        // Atualiza objetos com base nos selects da tela
-        bateria.tensao = parseFloat(document.getElementById('bateriaSelect').value);
-        resistorObj.resistencia = parseFloat(document.getElementById('resistorSelect').value);
-
-        let resultado = lampada.calcular(bateria, chave, resistorObj);
-        
-        // Atualiza Badge de Status
-        let badge = document.getElementById('statusBadge');
-        if (!chave.ligado) {
-            badge.className = "status-badge badge-off";
-            badge.innerText = "CIRCUITO DESLIGADO";
-        } else if (lampada.queimada) {
-            badge.className = "status-badge badge-danger";
-            badge.innerText = "CURTO / QUEIMADA";
-        } else if (lampada.acesa) {
-            badge.className = "status-badge badge-on";
-            badge.innerText = "LÂMPADA ACESA";
-        } else {
-            badge.className = "status-badge badge-off";
-            badge.innerText = "TENSÃO BAIXA";
+    // Missões do Jogo
+    const missoes = [
+        {
+            titulo: "Missão 1: Circuito de Iluminação Residencial (127V)",
+            descricao: "Monte uma linha de iluminação padrão NBR 5410. Utilize cabos de 1,5 mm², disjuntor de 10A adequado para iluminação e rede de 127V.",
+            tensaoReq: 127,
+            caboReq: "1.5",
+            disjuntorReq: "monofasico_10a",
+            cargaWatts: 150
+        },
+        {
+            titulo: "Missão 2: Circuito de Tomadas de Uso Geral - TUG (127V)",
+            descricao: "Monte o circuito para alimentar tomadas de uso geral com carga média de 2500W em 127V. Escolha a bitola de cabo e disjuntor corretos.",
+            tensaoReq: 127,
+            caboReq: "2.5",
+            disjuntorReq: "monofasico_20a",
+            cargaWatts: 2500
+        },
+        {
+            titulo: "Missão 3: Chuveiro Elétrico de Alta Potência (220V)",
+            descricao: "Instale um chuveiro de 5500W em rede de 220V. Exige cabo encorpado de 4.0 mm² e disjuntor de 32A para evitar desarme ou incêndio.",
+            tensaoReq: 220,
+            caboReq: "4.0",
+            disjuntorReq: "monofasico_32a",
+            cargaWatts: 5500
         }
+    ];
 
-        document.getElementById('gameLog').innerText = resultado.texto;
-        desenharCircuito(resultado.estado);
+    function atualizarMissaoUI() {
+        let m = missoes[jogo.fase - 1];
+        document.getElementById('missaoBox').innerHTML = `<strong>${m.titulo}</strong><br>${m.descricao}`;
+        document.getElementById('faseAtual').innerText = jogo.fase;
+        document.getElementById('pontos').innerText = jogo.pontos;
+        document.getElementById('btnProxima').style.display = 'none';
+        desenharEsquemaResidencial(false, "Parado");
     }
 
-    function desenharCircuito(estado) {
+    function desenharEsquemaResidencial(energizado, statusTexto) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Fios condutores principais (retângulo do circuito)
-        ctx.strokeStyle = chave.ligado ? (estado === 'danger' ? '#ff3333' : '#4CAF50') : '#777';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(60, 40, 530, 150);
-
-        // --- 1. Bateria (Esquerda) ---
-        ctx.fillStyle = '#333';
-        ctx.fillRect(45, 95, 30, 50);
-        ctx.fillStyle = '#fff';
-        ctx.font = '12px sans-serif';
-        ctx.fillText(bateria.tensao + "V", 48, 125);
-
-        // --- 2. Interruptor (Topo) ---
-        ctx.fillStyle = '#222';
-        ctx.fillRect(250, 30, 60, 20);
-        ctx.strokeStyle = chave.ligado ? '#4CAF50' : '#f44336';
+        // --- 1. QUADRO DE DISTRIBUIÇÃO (Disjuntor DIN) ---
+        ctx.fillStyle = '#27272a';
+        ctx.fillRect(40, 50, 100, 180);
+        ctx.strokeStyle = '#52525b';
         ctx.lineWidth = 2;
-        ctx.strokeRect(250, 30, 60, 20);
+        ctx.strokeRect(40, 50, 100, 180);
+
+        // Trilho DIN e Disjuntor detalhado
+        ctx.fillStyle = '#18181b';
+        ctx.fillRect(55, 80, 70, 110);
+        ctx.strokeStyle = energizado ? '#22c55e' : '#71717a';
+        ctx.strokeRect(55, 80, 70, 110);
+
+        // Alavanca do disjuntor
+        ctx.fillStyle = '#000';
+        ctx.fillRect(80, 115, 20, 40);
+        ctx.fillStyle = energizado ? '#ef4444' : '#71717a';
+        ctx.fillRect(83, energizado ? 120 : 135, 14, 20);
+
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px sans-serif';
+        ctx.fillText("DIN 1P", 72, 100);
+        let disjVal = document.getElementById('disjuntorSelect').value;
+        let ampText = disjVal.includes('10a') ? '10A' : disjVal.includes('16a') ? '16A' : disjVal.includes('20a') ? '20A' : disjVal.includes('32a') ? '32A' : '50A';
+        ctx.fillText(ampText, 80, 185);
+
+        // --- 2. CONDUTORES ELÉTRICOS (Cores Normatizadas NBR 5410) ---
+        // Fase (Vermelho)
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(140, 100);
+        ctx.lineTo(380, 100);
+        ctx.lineTo(380, 120);
+        ctx.stroke();
+
+        // Neutro (Azul Claro)
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(140, 120);
+        ctx.lineTo(320, 120);
+        ctx.lineTo(320, 220);
+        ctx.stroke();
+
+        // Terra (Verde e Amarelo tracejado)
+        ctx.strokeStyle = '#eab308';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(140, 140);
+        ctx.lineTo(260, 140);
+        ctx.lineTo(260, 220);
+        ctx.stroke();
+        ctx.setLineDash([]); // Limpa padrão tracejado
+
+        // Retorno (Amarelo sólido para lâmpada)
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(380, 100);
+        ctx.lineTo(550, 100);
+        ctx.lineTo(550, 120);
+        ctx.stroke();
+
+        // --- 3. INTERRUPTOR SIMPLES ---
+        ctx.fillStyle = '#3f3f46';
+        ctx.fillRect(350, 120, 60, 70);
+        ctx.strokeStyle = '#71717a';
+        ctx.strokeRect(350, 120, 60, 70);
         ctx.fillStyle = '#fff';
         ctx.font = '11px sans-serif';
-        ctx.fillText(chave.ligado ? "LIGADO" : "ABERTO", 258, 45);
+        ctx.fillText("Interruptor", 353, 145);
+        // Tecla
+        ctx.fillStyle = energizado ? '#27272a' : '#52525b';
+        ctx.fillRect(370, 150, 20, 30);
 
-        // --- 3. Resistor (Baixo) ---
-        ctx.fillStyle = '#b78727';
-        ctx.fillRect(240, 180, 80, 20);
-        ctx.fillStyle = '#fff';
-        ctx.font = '11px sans-serif';
-        ctx.fillText(resistorObj.resistencia + "Ω", 268, 195);
-
-        // --- 4. Lâmpada (Direita) ---
-        let lampX = 540;
-        let lampY = 115;
-        let raio = 25;
-
-        // Efeito de brilho se acesa
-        if (estado === 'on') {
+        // --- 4. PONTO DE CARGA / LÂMPADA OU APARELHO ---
+        let lampX = 660;
+        let lampY = 120;
+        
+        if (energizado && statusTexto === "sucesso") {
+            // Brilho da lâmpada / funcionamento
             let grad = ctx.createRadialGradient(lampX, lampY, 5, lampX, lampY, 45);
-            grad.addColorStop(0, 'rgba(255, 235, 59, 0.8)');
-            grad.addColorStop(1, 'rgba(255, 235, 59, 0)');
+            grad.addColorStop(0, 'rgba(234, 179, 8, 0.9)');
+            grad.addColorStop(1, 'rgba(234, 179, 8, 0)');
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(lampX, lampY, 45, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        // Corpo da Lâmpada
+        // Globo / Corpo da Lâmpada
         ctx.beginPath();
-        ctx.arc(lampX, lampY, raio, 0, Math.PI * 2);
-        if (estado === 'on') {
-            ctx.fillStyle = '#ffeb3b';
-        } else if (estado === 'danger') {
-            ctx.fillStyle = '#333'; // Queimada / escura com detalhes
-        } else if (estado === 'weak') {
-            ctx.fillStyle = '#8f8832'; // Fraca
-        } else {
-            ctx.fillStyle = '#444'; // Apagada
-        }
+        ctx.arc(lampX, lampY, 22, 0, Math.PI * 2);
+        ctx.fillStyle = (energizado && statusTexto === "sucesso") ? '#fef08a' : '#3f3f46';
         ctx.fill();
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Ícone ou texto na lâmpada
         ctx.fillStyle = '#000';
         ctx.font = '14px sans-serif';
-        if (estado === 'on') {
-            ctx.fillText("💡", lampX - 7, lampY + 5);
-        } else if (estado === 'danger') {
-            ctx.fillStyle = '#ff4444';
-            ctx.fillText("❌", lampX - 7, lampY + 5);
+        ctx.fillText(jogo.fase === 3 ? "🚿" : "💡", lampX - 7, lampY + 5);
+
+        // Legenda de Cores dos Cabos no Rodapé do Canvas
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(40, 255, 10, 10);
+        ctx.fillStyle = '#bbb'; ctx.font = '10px sans-serif'; ctx.fillText("Fase", 55, 264);
+
+        ctx.fillStyle = '#38bdf8'; ctx.fillRect(100, 255, 10, 10);
+        ctx.fillText("Neutro", 115, 264);
+
+        ctx.fillStyle = '#eab308'; ctx.fillRect(160, 255, 10, 10);
+        ctx.fillText("Terra", 175, 264);
+
+        ctx.fillStyle = '#facc15'; ctx.fillRect(215, 255, 10, 10);
+        ctx.fillText("Retorno", 230, 264);
+    }
+
+    function testarInstalacao() {
+        let m = missoes[jogo.fase - 1];
+        let disjSel = document.getElementById('disjuntorSelect').value;
+        let caboSel = document.getElementById('caboSelect').value;
+        let tensaoSel = parseInt(document.getElementById('tensaoSelect').value);
+
+        let logEl = document.getElementById('gameLog');
+
+        // Validações NBR 5410
+        if (tensaoSel !== m.tensaoReq) {
+            desenharEsquemaResidencial(true, "falha");
+            logEl.innerHTML = `<span class="danger-text">❌ TENSÃO INCORRETA:</span> O circuito exige ${m.tensaoReq}V. Ajuste a tensão da rede para alimentar corretamente os equipamentos.`;
+            return;
+        }
+
+        if (caboSel !== m.caboReq) {
+            desenharEsquemaResidencial(true, "falha");
+            let alertaCabo = parseFloat(caboSel) < parseFloat(m.caboReq) ? "Cabo muito fino! Risco iminente de aquecimento e curto-circuito (Efeito Joule)." : "Cabo superdimensionado para esta carga (desperdício financeiro).";
+            logEl.innerHTML = `<span class="danger-text">❌ BITOLA INADEQUADA:</span> ${alertaCabo} A bitola correta para esta fase é ${m.caboReq} mm².`;
+            return;
+        }
+
+        if (disjuntorSelect.value !== m.disjuntorReq) {
+            desenharEsquemaResidencial(true, "falha");
+            logEl.innerHTML = `<span class="danger-text">❌ DISJUNTOR INCOMPATÍVEL:</span> O disjuntor escolhido não protege adequadamente a corrente nominal deste circuito residencial.`;
+            return;
+        }
+
+        // Sucesso
+        desenharEsquemaResidencial(true, "sucesso");
+        jogo.pontos += 150;
+        document.getElementById('pontos').innerText = jogo.pontos;
+        logEl.innerHTML = `<span class="success-text">✨ INSTALAÇÃO PERFEITA!</span> Os condutores, cores, disjuntor e tensão estão em total conformidade com a NBR 5410. Circuito energizado com segurança!`;
+        
+        if (jogo.fase < missoes.length) {
+            document.getElementById('btnProxima').style.display = 'block';
         } else {
-            ctx.fillStyle = '#aaa';
-            ctx.fillText("🔌", lampX - 7, lampY + 5);
+            logEl.innerHTML += `<br><strong>🏆 PARABÉNS! Você concluiu todas as missões do Eletricista Pro com excelência!</strong>`;
         }
     }
 
-    // Desenho inicial ao carregar a página
-    atualizarSimulacao();
+    function proximaFase() {
+        if (jogo.fase < missoes.length) {
+            jogo.fase++;
+            atualizarMissaoUI();
+        }
+    }
+
+    // Inicialização
+    atualizarMissaoUI();
 </script>
 
 </body>
