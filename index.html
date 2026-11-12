@@ -1,0 +1,146 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Eletricidade</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .console {
+            background-color: #222;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: left;
+            margin-top: 20px;
+            min-height: 150px;
+            white-space: pre-wrap;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Jogo de Simulação Elétrica</h1>
+    <p>Clique nos botões abaixo para rodar as fases do jogo.</p>
+    
+    <button onclick="rodarFase1()">Rodar Fase 1</button>
+    <button onclick="rodarFase2()">Rodar Fase 2</button>
+    
+    <div id="gameLog" class="console">O jogo está pronto. Escolha uma fase para começar.</div>
+</div>
+
+<script>
+    class Fonte {
+        constructor(tensao) { this.tensao = tensao; }
+    }
+
+    class Interruptor {
+        constructor() { this.ligado = false; }
+        alternar() { this.ligado = !this.ligado; }
+    }
+
+    class Resistor {
+        constructor(resistencia) { this.resistencia = resistencia; }
+    }
+
+    class Lampada {
+        constructor(tensaoNominal) {
+            this.tensaoNominal = tensaoNominal;
+            this.acesa = false;
+            this.queimada = false;
+        }
+
+        verificarCircuito(fonte, interruptor, resistor) {
+            if (!interruptor.ligado) {
+                return "A lâmpada está apagada (circuito aberto).\n";
+            }
+            if (resistor.resistencia === 0) {
+                this.queimada = true;
+                return "PERIGO: Curtociruito! Sem resistor no circuito.\n";
+            }
+
+            let corrente = fonte.tensao / resistor.resistencia;
+            let tensaoNaLampada = corrente * 10;
+
+            if (tensaoNaLampada > this.tensaoNominal * 1.2) {
+                this.queimada = true;
+                return `❌ A lâmpada queimou! Tensão muito alta: ${tensaoNaLampada.toFixed(1)}V.\n`;
+            } else if (tensaoNaLampada < this.tensaoNominal * 0.8) {
+                return `⚠️ A lâmpada está fraca. Tensão insuficiente: ${tensaoNaLampada.toFixed(1)}V.\n`;
+            } else {
+                this.acesa = true;
+                return `✨ A lâmpada acendeu com brilho perfeito! Tensão: ${tensaoNaLampada.toFixed(1)}V.\n`;
+            }
+        }
+    }
+
+    function log(mensagem) {
+        document.getElementById('gameLog').innerText = mensagem;
+    }
+
+    function rodarFase1() {
+        let texto = "=== FASE 1: Circuito Simples ===\n";
+        let bateria = new Fonte(12);
+        let chave = new Interruptor();
+        let resistorFase1 = new Resistor(10);
+        let lampada1 = new Lampada(12);
+
+        chave.alternar();
+        texto += lampada1.verificarCircuito(bateria, chave, resistorFase1);
+        log(texto);
+    }
+
+    function rodarFase2() {
+        let texto = "=== FASE 2: Dimensionamento de Resistor ===\n";
+        let bateria24v = new Fonte(24);
+        let chaveFase2 = new Interruptor();
+        let lampada2 = new Lampada(12);
+
+        texto += "\n[Tentativa 1] Usando resistor de 5 Ohms:\n";
+        let resistorErrado = new Resistor(5);
+        chaveFase2.alternar();
+        texto += lampada2.verificarCircuito(bateria24v, chaveFase2, resistorErrado);
+
+        texto += "\n[Tentativa 2] Ajustando para resistor de 20 Ohms:\n";
+        let resistorCorreto = new Resistor(20);
+        texto += lampada2.verificarCircuito(bateria24v, chaveFase2, resistorCorreto);
+        
+        log(texto);
+    }
+</script>
+
+</body>
+</html>
+```
