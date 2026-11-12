@@ -1,64 +1,161 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Eletricidade</title>
+    <title>Simulador de Circuitos Elétricos</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
             padding: 20px;
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 700px;
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
         h1 {
-            color: #333;
+            color: #4CAF50;
+            text-align: center;
+            margin-top: 0;
+            font-size: 24px;
         }
-        .console {
-            background-color: #222;
-            color: #0f0;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            text-align: left;
-            margin-top: 20px;
-            min-height: 150px;
-            white-space: pre-wrap;
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: #111;
+            border-radius: 8px;
+            border: 2px solid #444;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+        }
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #bbb;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+            font-size: 15px;
+            box-sizing: border-box;
         }
         button {
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
+            border: none;
+            transition: background 0.2s;
+            grid-column: span 2;
+            margin-top: 5px;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
+        .console {
+            background-color: #000;
+            color: #00ff66;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: left;
+            min-height: 80px;
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .badge-off { background: #555; color: #fff; }
+        .badge-on { background: #ffeb3b; color: #000; }
+        .badge-danger { background: #f44336; color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Jogo de Simulação Elétrica</h1>
-    <p>Clique nos botões abaixo para rodar as fases do jogo.</p>
+    <h1>Laboratório de Eletricidade & Lei de Ohm</h1>
     
-    <button onclick="rodarFase1()">Rodar Fase 1</button>
-    <button onclick="rodarFase2()">Rodar Fase 2</button>
-    
-    <div id="gameLog" class="console">O jogo está pronto. Escolha uma fase para começar.</div>
+    <div style="text-align: center;">
+        <span id="statusBadge" class="badge-badge badge-off">CIRCUITO DESLIGADO</span>
+    </div>
+
+    <!-- Área Visual do Circuito -->
+    <div class="canvas-container">
+        <canvas id="circuitCanvas" width="650" height="230"></canvas>
+    </div>
+
+    <!-- Controles -->
+    <div class="controls-grid">
+        <div class="control-group">
+            <label for="bateriaSelect">Bateria (Fonte):</label>
+            <select id="bateriaSelect" onchange="atualizarSimulacao()">
+                <option value="12">12V (Padrão)</option>
+                <option value="24">24V (Alta Potência)</option>
+                <option value="5">5V (Baixa Tensão)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="resistorSelect">Resistor:</label>
+            <select id="resistorSelect" onchange="atualizarSimulacao()">
+                <option value="0">0 Ohms (Curto-Circuito!)</option>
+                <option value="5">5 Ohms</option>
+                <option value="10" selected>10 Ohms</option>
+                <option value="20">20 Ohms</option>
+                <option value="50">50 Ohms (Forte Restrição)</option>
+            </select>
+        </div>
+
+        <button id="btnInterruptor" onclick="alternarInterruptor()">Ligar / Desligar Interruptor</button>
+    </div>
+
+    <!-- Log / Terminal -->
+    <div id="gameLog" class="console">Sistema pronto. Configure os componentes e feche o interruptor.</div>
 </div>
 
 <script>
@@ -82,13 +179,17 @@
             this.queimada = false;
         }
 
-        verificarCircuito(fonte, interruptor, resistor) {
+        calcular(fonte, interruptor, resistor) {
+            this.acesa = false;
+            this.queimada = false;
+
             if (!interruptor.ligado) {
-                return "A lâmpada está apagada (circuito aberto).\n";
+                return { texto: "A lâmpada está apagada (circuito aberto).", estado: "off", tensao: 0 };
             }
+
             if (resistor.resistencia === 0) {
                 this.queimada = true;
-                return "PERIGO: Curtociruito! Sem resistor no circuito.\n";
+                return { texto: "❌ PERIGO: Curto-circuito! Sem resistor, a corrente disparou e a lâmpada queimou.", estado: "danger", tensao: fonte.tensao };
             }
 
             let corrente = fonte.tensao / resistor.resistencia;
@@ -96,51 +197,139 @@
 
             if (tensaoNaLampada > this.tensaoNominal * 1.2) {
                 this.queimada = true;
-                return `❌ A lâmpada queimou! Tensão muito alta: ${tensaoNaLampada.toFixed(1)}V.\n`;
+                return { texto: `💥 A lâmpada queimou! Tensão muito alta: ${tensaoNaLampada.toFixed(1)}V (Máx suportada: ${(this.tensaoNominal*1.2).toFixed(1)}V).`, estado: "danger", tensao: tensaoNaLampada };
             } else if (tensaoNaLampada < this.tensaoNominal * 0.8) {
-                return `⚠️ A lâmpada está fraca. Tensão insuficiente: ${tensaoNaLampada.toFixed(1)}V.\n`;
+                return { texto: `⚠️ A lâmpada está fraca. Tensão insuficiente: ${tensaoNaLampada.toFixed(1)}V.`, estado: "weak", tensao: tensaoNaLampada };
             } else {
                 this.acesa = true;
-                return `✨ A lâmpada acendeu com brilho perfeito! Tensão: ${tensaoNaLampada.toFixed(1)}V.\n`;
+                return { texto: `✨ Brilho perfeito! Tensão ideal na lâmpada: ${tensaoNaLampada.toFixed(1)}V.`, estado: "on", tensao: tensaoNaLampada };
             }
         }
     }
 
-    function log(mensagem) {
-        document.getElementById('gameLog').innerText = mensagem;
-    }
+    // Instâncias do jogo
+    let bateria = new Fonte(12);
+    let chave = new Interruptor();
+    let resistorObj = new Resistor(10);
+    let lampada = new Lampada(12);
 
-    function rodarFase1() {
-        let texto = "=== FASE 1: Circuito Simples ===\n";
-        let bateria = new Fonte(12);
-        let chave = new Interruptor();
-        let resistorFase1 = new Resistor(10);
-        let lampada1 = new Lampada(12);
+    const canvas = document.getElementById('circuitCanvas');
+    const ctx = canvas.getContext('2d');
 
+    function alternarInterruptor() {
         chave.alternar();
-        texto += lampada1.verificarCircuito(bateria, chave, resistorFase1);
-        log(texto);
+        atualizarSimulacao();
     }
 
-    function rodarFase2() {
-        let texto = "=== FASE 2: Dimensionamento de Resistor ===\n";
-        let bateria24v = new Fonte(24);
-        let chaveFase2 = new Interruptor();
-        let lampada2 = new Lampada(12);
+    function atualizarSimulacao() {
+        // Atualiza objetos com base nos selects da tela
+        bateria.tensao = parseFloat(document.getElementById('bateriaSelect').value);
+        resistorObj.resistencia = parseFloat(document.getElementById('resistorSelect').value);
 
-        texto += "\n[Tentativa 1] Usando resistor de 5 Ohms:\n";
-        let resistorErrado = new Resistor(5);
-        chaveFase2.alternar();
-        texto += lampada2.verificarCircuito(bateria24v, chaveFase2, resistorErrado);
-
-        texto += "\n[Tentativa 2] Ajustando para resistor de 20 Ohms:\n";
-        let resistorCorreto = new Resistor(20);
-        texto += lampada2.verificarCircuito(bateria24v, chaveFase2, resistorCorreto);
+        let resultado = lampada.calcular(bateria, chave, resistorObj);
         
-        log(texto);
+        // Atualiza Badge de Status
+        let badge = document.getElementById('statusBadge');
+        if (!chave.ligado) {
+            badge.className = "status-badge badge-off";
+            badge.innerText = "CIRCUITO DESLIGADO";
+        } else if (lampada.queimada) {
+            badge.className = "status-badge badge-danger";
+            badge.innerText = "CURTO / QUEIMADA";
+        } else if (lampada.acesa) {
+            badge.className = "status-badge badge-on";
+            badge.innerText = "LÂMPADA ACESA";
+        } else {
+            badge.className = "status-badge badge-off";
+            badge.innerText = "TENSÃO BAIXA";
+        }
+
+        document.getElementById('gameLog').innerText = resultado.texto;
+        desenharCircuito(resultado.estado);
     }
+
+    function desenharCircuito(estado) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Fios condutores principais (retângulo do circuito)
+        ctx.strokeStyle = chave.ligado ? (estado === 'danger' ? '#ff3333' : '#4CAF50') : '#777';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(60, 40, 530, 150);
+
+        // --- 1. Bateria (Esquerda) ---
+        ctx.fillStyle = '#333';
+        ctx.fillRect(45, 95, 30, 50);
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px sans-serif';
+        ctx.fillText(bateria.tensao + "V", 48, 125);
+
+        // --- 2. Interruptor (Topo) ---
+        ctx.fillStyle = '#222';
+        ctx.fillRect(250, 30, 60, 20);
+        ctx.strokeStyle = chave.ligado ? '#4CAF50' : '#f44336';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(250, 30, 60, 20);
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(chave.ligado ? "LIGADO" : "ABERTO", 258, 45);
+
+        // --- 3. Resistor (Baixo) ---
+        ctx.fillStyle = '#b78727';
+        ctx.fillRect(240, 180, 80, 20);
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(resistorObj.resistencia + "Ω", 268, 195);
+
+        // --- 4. Lâmpada (Direita) ---
+        let lampX = 540;
+        let lampY = 115;
+        let raio = 25;
+
+        // Efeito de brilho se acesa
+        if (estado === 'on') {
+            let grad = ctx.createRadialGradient(lampX, lampY, 5, lampX, lampY, 45);
+            grad.addColorStop(0, 'rgba(255, 235, 59, 0.8)');
+            grad.addColorStop(1, 'rgba(255, 235, 59, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(lampX, lampY, 45, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Corpo da Lâmpada
+        ctx.beginPath();
+        ctx.arc(lampX, lampY, raio, 0, Math.PI * 2);
+        if (estado === 'on') {
+            ctx.fillStyle = '#ffeb3b';
+        } else if (estado === 'danger') {
+            ctx.fillStyle = '#333'; // Queimada / escura com detalhes
+        } else if (estado === 'weak') {
+            ctx.fillStyle = '#8f8832'; // Fraca
+        } else {
+            ctx.fillStyle = '#444'; // Apagada
+        }
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Ícone ou texto na lâmpada
+        ctx.fillStyle = '#000';
+        ctx.font = '14px sans-serif';
+        if (estado === 'on') {
+            ctx.fillText("💡", lampX - 7, lampY + 5);
+        } else if (estado === 'danger') {
+            ctx.fillStyle = '#ff4444';
+            ctx.fillText("❌", lampX - 7, lampY + 5);
+        } else {
+            ctx.fillStyle = '#aaa';
+            ctx.fillText("🔌", lampX - 7, lampY + 5);
+        }
+    }
+
+    // Desenho inicial ao carregar a página
+    atualizarSimulacao();
 </script>
 
 </body>
 </html>
-```
