@@ -1,3 +1,7 @@
+HTML</td>
+</tr>
+<tr>
+<td>com tags de imagem. Deixei os links preparados para você colocar exatamente a foto que desejar de um disjuntor real, do chuveiro e dos outros componentes. Copie este código atualizado no seu `index.html`. ```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -31,9 +35,9 @@
 
         .container {
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             background: var(--panel-bg);
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             border: 1px solid var(--border-color);
@@ -51,7 +55,7 @@
         h1 {
             color: var(--accent-green);
             margin: 0;
-            font-size: 20px;
+            font-size: 22px;
         }
 
         .hud-stats {
@@ -63,86 +67,116 @@
 
         .stat-box {
             background: #27272a;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
         }
 
-        /* Mission Panel */
         .mission-panel {
             background: #25252d;
             border-left: 4px solid var(--accent-blue);
-            padding: 12px;
+            padding: 15px;
             border-radius: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-size: 14px;
             line-height: 1.4;
         }
 
-        /* Canvas Arena */
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            background: #09090b;
-            border-radius: 8px;
-            border: 2px solid var(--border-color);
-            margin-bottom: 15px;
-            overflow: hidden;
+        /* Área dos Componentes Reais */
+        .components-arena {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            background: #09090b;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            margin-bottom: 25px;
+            min-height: 200px;
+            position: relative;
         }
 
-        canvas {
+        .component-box {
+            text-align: center;
+            width: 150px;
+            padding: 15px;
+            background: #18181b;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .component-box img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.1));
+            transition: filter 0.3s;
+        }
+
+        .component-box.on img {
+            filter: drop-shadow(0 0 15px var(--accent-yellow));
+        }
+
+        .label-comp {
             display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-muted);
         }
 
-        /* Controls Grid */
+        .wire-indicator {
+            height: 4px;
+            background: #ef4444; /* Vermelho padrão Fase */
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+        /* Controles */
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .control-group {
             background: #27272a;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 15px;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
         }
 
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 12px;
             color: var(--text-muted);
             font-weight: bold;
+            text-transform: uppercase;
         }
 
         select {
             width: 100%;
-            padding: 8px;
-            border-radius: 4px;
+            padding: 10px;
+            border-radius: 6px;
             border: 1px solid #52525b;
             background: #18181b;
             color: #fff;
-            font-size: 13px;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 10px;
+            font-size: 14px;
         }
 
         button {
-            padding: 10px;
-            border-radius: 6px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
             border: none;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             transition: opacity 0.2s;
         }
@@ -154,28 +188,29 @@
         .btn-test {
             background-color: var(--accent-green);
             color: #fff;
+            margin-bottom: 10px;
         }
 
         .btn-action {
             background-color: var(--accent-blue);
             color: #fff;
+            display: none; /* Só aparece quando passar de fase */
         }
 
-        /* Console / Feedback */
         .console {
             background-color: #09090b;
             color: #38bdf8;
-            padding: 12px;
+            padding: 15px;
             border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             text-align: left;
-            min-height: 50px;
-            max-height: 80px;
+            min-height: 60px;
+            max-height: 100px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
             font-size: 13px;
             white-space: pre-wrap;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .danger-text { color: var(--accent-red); }
@@ -186,24 +221,43 @@
 
 <div class="container">
     <header>
-        <h1>⚡ Eletricista Pro: Instalações Residenciais</h1>
+        <h1>⚡ Eletricista Pro: Instalações Reais</h1>
         <div class="hud-stats">
             <div class="stat-box">Fase: <span id="faseAtual">1</span>/3</div>
             <div class="stat-box">Pontos: <span id="pontos">0</span></div>
         </div>
     </header>
 
-    <!-- Missão / Objetivo -->
     <div id="missaoBox" class="mission-panel">
-        <strong>Missão 1:</strong> Monte a infraestrutura básica de um circuito de iluminação simples em 127V. Selecione o Disjuntor correto, a Bitola do cabo fase (Vermelho), neutro (Azul) e terra (Verde-Amarelo), além do retorno (Amarelo).
+        <strong>Carregando missão...</strong>
     </div>
 
-    <!-- Canvas de Desenho Técnico Realista -->
-    <div class="canvas-container">
-        <canvas id="circuitCanvas" width="800" height="280"></canvas>
+    <!-- Arena Visual com Fotos Reais -->
+    <div class="components-arena">
+        
+        <!-- Disjuntor DIN -->
+        <div id="boxDisjuntor" class="component-box">
+            <img id="imgDisjuntor" src="https://via.placeholder.com/100?text=Disjuntor" alt="Disjuntor DIN">
+            <span class="label-comp">Disjuntor DIN</span>
+        </div>
+
+        <!-- Fiação / Condutores -->
+        <div class="wire-indicator"></div>
+
+        <!-- Interruptor / Tomada -->
+        <div id="boxControle" class="component-box">
+            <img id="imgControle" src="https://via.placeholder.com/100?text=Controle" alt="Interruptor/Tomada">
+            <span id="labelControle" class="label-comp">Interruptor</span>
+        </div>
+
+        <!-- Carga (Lâmpada ou Chuveiro) -->
+        <div id="boxCarga" class="component-box">
+            <img id="imgCarga" src="https://via.placeholder.com/100?text=Carga" alt="Lâmpada/Chuveiro">
+            <span id="labelCarga" class="label-comp">Carga</span>
+        </div>
+
     </div>
 
-    <!-- Controles de Projeto -->
     <div class="controls-grid">
         <div class="control-group">
             <label for="disjuntorSelect">Disjuntor Geral:</label>
@@ -217,7 +271,7 @@
         </div>
 
         <div class="control-group">
-            <label for="caboSelect">Bitola dos Condutores:</label>
+            <label for="caboSelect">Bitola dos Cabos:</label>
             <select id="caboSelect">
                 <option value="1.5">1,5 mm² (Iluminação)</option>
                 <option value="2.5">2,5 mm² (Tomadas)</option>
@@ -235,13 +289,10 @@
         </div>
     </div>
 
-    <div class="action-buttons">
-        <button class="btn-test" onclick="testarInstalacao()">Testar Circuito (Energizar)</button>
-        <button class="btn-action" onclick="proximaFase()" id="btnProxima" style="display:none;">Avançar de Fase ➔</button>
-    </div>
+    <button class="btn-test" onclick="testarInstalacao()">Testar Circuito (Energizar)</button>
+    <button class="btn-action" onclick="proximaFase()" id="btnProxima">Avançar de Fase ➔</button>
 
-    <!-- Terminal de Diagnóstico -->
-    <div id="gameLog" class="console">Sistema pronto. Selecione os componentes corretos baseados na NBR 5410 e clique em Testar Circuito.</div>
+    <div id="gameLog" class="console">Sistema pronto. Conecte os componentes e teste a instalação.</div>
 </div>
 
 <script>
@@ -252,166 +303,70 @@
         concluido: false
     };
 
-    const canvas = document.getElementById('circuitCanvas');
-    const ctx = canvas.getContext('2d');
+    // Imagens Reais (Exemplos prontos para você, pode substituir pelas URLs das suas fotos!)
+    const imagens = {
+        disjuntor: "https://http2.mlstatic.com/D_NQ_NP_830691-MLB46211466810_052021-O.jpg", // Foto meramente ilustrativa de um disjuntor DIN
+        interruptor: "https://cdn-icons-png.flaticon.com/512/3203/3203305.png", // Ícone de interruptor padrão
+        tomada: "https://cdn-icons-png.flaticon.com/512/3067/3067406.png", // Ícone de tomada
+        lampadaOff: "https://cdn-icons-png.flaticon.com/512/702/702812.png", // Lâmpada Apagada
+        lampadaOn: "https://cdn-icons-png.flaticon.com/512/3233/3233646.png", // Lâmpada Acesa
+        chuveiroOff: "https://cdn-icons-png.flaticon.com/512/3132/3132204.png", // Chuveiro Desligado
+        chuveiroOn: "https://cdn-icons-png.flaticon.com/512/766/766324.png" // Chuveiro Funcionando
+    };
 
-    // Missões do Jogo
     const missoes = [
         {
-            titulo: "Missão 1: Circuito de Iluminação Residencial (127V)",
-            descricao: "Monte uma linha de iluminação padrão NBR 5410. Utilize cabos de 1,5 mm², disjuntor de 10A adequado para iluminação e rede de 127V.",
+            titulo: "Missão 1: Circuito de Iluminação (127V)",
+            descricao: "Monte uma linha de iluminação com lâmpada padrão. Utilize cabos de 1,5 mm², disjuntor de 10A apropriado para iluminação e rede em 127V.",
             tensaoReq: 127,
             caboReq: "1.5",
             disjuntorReq: "monofasico_10a",
-            cargaWatts: 150
+            labelCtrl: "Interruptor",
+            imgCargaOff: imagens.lampadaOff,
+            imgCargaOn: imagens.lampadaOn
         },
         {
             titulo: "Missão 2: Circuito de Tomadas de Uso Geral - TUG (127V)",
-            descricao: "Monte o circuito para alimentar tomadas de uso geral com carga média de 2500W em 127V. Escolha a bitola de cabo e disjuntor corretos.",
+            descricao: "Monte o circuito para alimentar tomadas elétricas padrão. Selecione a bitola de cabo e disjuntor adequados para um circuito típico de tomadas em 127V.",
             tensaoReq: 127,
             caboReq: "2.5",
             disjuntorReq: "monofasico_20a",
-            cargaWatts: 2500
+            labelCtrl: "Tomada",
+            imgCargaOff: imagens.tomada,
+            imgCargaOn: imagens.tomada
         },
         {
             titulo: "Missão 3: Chuveiro Elétrico de Alta Potência (220V)",
-            descricao: "Instale um chuveiro de 5500W em rede de 220V. Exige cabo encorpado de 4.0 mm² e disjuntor de 32A para evitar desarme ou incêndio.",
+            descricao: "Instale um chuveiro elétrico potente em rede de 220V. O circuito exige obrigatoriamente cabo espesso de 4.0 mm² e disjuntor de 32A.",
             tensaoReq: 220,
             caboReq: "4.0",
             disjuntorReq: "monofasico_32a",
-            cargaWatts: 5500
+            labelCtrl: "Controle (Chave Chuveiro)",
+            imgCargaOff: imagens.chuveiroOff,
+            imgCargaOn: imagens.chuveiroOn
         }
     ];
 
     function atualizarMissaoUI() {
         let m = missoes[jogo.fase - 1];
-        document.getElementById('missaoBox').innerHTML = `<strong>${m.titulo}</strong><br>${m.descricao}`;
+        document.getElementById('missaoBox').innerHTML = `<strong>Fase ${jogo.fase}: ${m.titulo}</strong><br>${m.descricao}`;
         document.getElementById('faseAtual').innerText = jogo.fase;
         document.getElementById('pontos').innerText = jogo.pontos;
-        document.getElementById('btnProxima').style.display = 'none';
-        desenharEsquemaResidencial(false, "Parado");
-    }
-
-    function desenharEsquemaResidencial(energizado, statusTexto) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // --- 1. QUADRO DE DISTRIBUIÇÃO (Disjuntor DIN) ---
-        ctx.fillStyle = '#27272a';
-        ctx.fillRect(40, 50, 100, 180);
-        ctx.strokeStyle = '#52525b';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(40, 50, 100, 180);
-
-        // Trilho DIN e Disjuntor detalhado
-        ctx.fillStyle = '#18181b';
-        ctx.fillRect(55, 80, 70, 110);
-        ctx.strokeStyle = energizado ? '#22c55e' : '#71717a';
-        ctx.strokeRect(55, 80, 70, 110);
-
-        // Alavanca do disjuntor
-        ctx.fillStyle = '#000';
-        ctx.fillRect(80, 115, 20, 40);
-        ctx.fillStyle = energizado ? '#ef4444' : '#71717a';
-        ctx.fillRect(83, energizado ? 120 : 135, 14, 20);
-
-        ctx.fillStyle = '#fff';
-        ctx.font = '10px sans-serif';
-        ctx.fillText("DIN 1P", 72, 100);
-        let disjVal = document.getElementById('disjuntorSelect').value;
-        let ampText = disjVal.includes('10a') ? '10A' : disjVal.includes('16a') ? '16A' : disjVal.includes('20a') ? '20A' : disjVal.includes('32a') ? '32A' : '50A';
-        ctx.fillText(ampText, 80, 185);
-
-        // --- 2. CONDUTORES ELÉTRICOS (Cores Normatizadas NBR 5410) ---
-        // Fase (Vermelho)
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(140, 100);
-        ctx.lineTo(380, 100);
-        ctx.lineTo(380, 120);
-        ctx.stroke();
-
-        // Neutro (Azul Claro)
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(140, 120);
-        ctx.lineTo(320, 120);
-        ctx.lineTo(320, 220);
-        ctx.stroke();
-
-        // Terra (Verde e Amarelo tracejado)
-        ctx.strokeStyle = '#eab308';
-        ctx.lineWidth = 3;
-        ctx.setLineDash([5, 5]);
-        ctx.beginPath();
-        ctx.moveTo(140, 140);
-        ctx.lineTo(260, 140);
-        ctx.lineTo(260, 220);
-        ctx.stroke();
-        ctx.setLineDash([]); // Limpa padrão tracejado
-
-        // Retorno (Amarelo sólido para lâmpada)
-        ctx.strokeStyle = '#facc15';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(380, 100);
-        ctx.lineTo(550, 100);
-        ctx.lineTo(550, 120);
-        ctx.stroke();
-
-        // --- 3. INTERRUPTOR SIMPLES ---
-        ctx.fillStyle = '#3f3f46';
-        ctx.fillRect(350, 120, 60, 70);
-        ctx.strokeStyle = '#71717a';
-        ctx.strokeRect(350, 120, 60, 70);
-        ctx.fillStyle = '#fff';
-        ctx.font = '11px sans-serif';
-        ctx.fillText("Interruptor", 353, 145);
-        // Tecla
-        ctx.fillStyle = energizado ? '#27272a' : '#52525b';
-        ctx.fillRect(370, 150, 20, 30);
-
-        // --- 4. PONTO DE CARGA / LÂMPADA OU APARELHO ---
-        let lampX = 660;
-        let lampY = 120;
         
-        if (energizado && statusTexto === "sucesso") {
-            // Brilho da lâmpada / funcionamento
-            let grad = ctx.createRadialGradient(lampX, lampY, 5, lampX, lampY, 45);
-            grad.addColorStop(0, 'rgba(234, 179, 8, 0.9)');
-            grad.addColorStop(1, 'rgba(234, 179, 8, 0)');
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.arc(lampX, lampY, 45, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        // Reseta Imagens da Arena
+        document.getElementById('imgDisjuntor').src = imagens.disjuntor;
+        document.getElementById('imgControle').src = jogo.fase === 2 ? imagens.tomada : imagens.interruptor;
+        document.getElementById('imgCarga').src = m.imgCargaOff;
+        
+        document.getElementById('labelControle').innerText = m.labelCtrl;
+        document.getElementById('labelCarga').innerText = jogo.fase === 3 ? "Chuveiro Elétrico" : (jogo.fase === 2 ? "Aparelho na Tomada" : "Lâmpada");
 
-        // Globo / Corpo da Lâmpada
-        ctx.beginPath();
-        ctx.arc(lampX, lampY, 22, 0, Math.PI * 2);
-        ctx.fillStyle = (energizado && statusTexto === "sucesso") ? '#fef08a' : '#3f3f46';
-        ctx.fill();
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = '#000';
-        ctx.font = '14px sans-serif';
-        ctx.fillText(jogo.fase === 3 ? "🚿" : "💡", lampX - 7, lampY + 5);
-
-        // Legenda de Cores dos Cabos no Rodapé do Canvas
-        ctx.fillStyle = '#ef4444'; ctx.fillRect(40, 255, 10, 10);
-        ctx.fillStyle = '#bbb'; ctx.font = '10px sans-serif'; ctx.fillText("Fase", 55, 264);
-
-        ctx.fillStyle = '#38bdf8'; ctx.fillRect(100, 255, 10, 10);
-        ctx.fillText("Neutro", 115, 264);
-
-        ctx.fillStyle = '#eab308'; ctx.fillRect(160, 255, 10, 10);
-        ctx.fillText("Terra", 175, 264);
-
-        ctx.fillStyle = '#facc15'; ctx.fillRect(215, 255, 10, 10);
-        ctx.fillText("Retorno", 230, 264);
+        document.getElementById('boxControle').classList.remove('on');
+        document.getElementById('boxCarga').classList.remove('on');
+        document.getElementById('btnProxima').style.display = 'none';
+        
+        document.getElementById('gameLog').innerHTML = "Sistema pronto. Realize as conexões e teste o circuito.";
+        document.getElementById('gameLog').className = "console";
     }
 
     function testarInstalacao() {
@@ -421,37 +376,48 @@
         let tensaoSel = parseInt(document.getElementById('tensaoSelect').value);
 
         let logEl = document.getElementById('gameLog');
+        let boxCarga = document.getElementById('boxCarga');
+        let boxControle = document.getElementById('boxControle');
+        let imgCarga = document.getElementById('imgCarga');
 
-        // Validações NBR 5410
+        // Reset visual das cargas
+        imgCarga.src = m.imgCargaOff;
+        boxCarga.classList.remove('on');
+        boxControle.classList.remove('on');
+
         if (tensaoSel !== m.tensaoReq) {
-            desenharEsquemaResidencial(true, "falha");
-            logEl.innerHTML = `<span class="danger-text">❌ TENSÃO INCORRETA:</span> O circuito exige ${m.tensaoReq}V. Ajuste a tensão da rede para alimentar corretamente os equipamentos.`;
+            logEl.className = "console danger-text";
+            logEl.innerHTML = `RETA: O circuito exige ${m.tensaoReq}V. Ajuste a tensão da rede para alimentar os equipamentos corretamente.`;
             return;
         }
 
         if (caboSel !== m.caboReq) {
-            desenharEsquemaResidencial(true, "falha");
-            let alertaCabo = parseFloat(caboSel) < parseFloat(m.caboReq) ? "Cabo muito fino! Risco iminente de aquecimento e curto-circuito (Efeito Joule)." : "Cabo superdimensionado para esta carga (desperdício financeiro).";
-            logEl.innerHTML = `<span class="danger-text">❌ BITOLA INADEQUADA:</span> ${alertaCabo} A bitola correta para esta fase é ${m.caboReq} mm².`;
+            logEl.className = "console danger-text";
+            let alertaCabo = parseFloat(caboSel) < parseFloat(m.caboReq) ? "Cabo muito fino! Risco de aquecimento e curto-circuito." : "Cabo superdimensionado (desperdício financeiro).";
+            logEl.innerHTML = `❌ BITOLA INADEQUADA: ${alertaCabo} A bitola correta para esta fase é ${m.caboReq} mm².`;
             return;
         }
 
-        if (disjuntorSelect.value !== m.disjuntorReq) {
-            desenharEsquemaResidencial(true, "falha");
-            logEl.innerHTML = `<span class="danger-text">❌ DISJUNTOR INCOMPATÍVEL:</span> O disjuntor escolhido não protege adequadamente a corrente nominal deste circuito residencial.`;
+        if (disjSel !== m.disjuntorReq) {
+            logEl.className = "console danger-text";
+            logEl.innerHTML = `❌ DISJUNTOR INCOMPATÍVEL: O disjuntor escolhido não protege adequadamente a corrente nominal deste circuito residencial.`;
             return;
         }
 
         // Sucesso
-        desenharEsquemaResidencial(true, "sucesso");
-        jogo.pontos += 150;
+        boxCarga.classList.add('on');
+        boxControle.classList.add('on');
+        imgCarga.src = m.imgCargaOn;
+
+        jogo.pontos += 250;
         document.getElementById('pontos').innerText = jogo.pontos;
-        logEl.innerHTML = `<span class="success-text">✨ INSTALAÇÃO PERFEITA!</span> Os condutores, cores, disjuntor e tensão estão em total conformidade com a NBR 5410. Circuito energizado com segurança!`;
+        logEl.className = "console success-text";
+        logEl.innerHTML = `✨ INSTALAÇÃO PERFEITA! Em conformidade com a NBR 5410. Circuito energizado com segurança máxima.`;
         
         if (jogo.fase < missoes.length) {
             document.getElementById('btnProxima').style.display = 'block';
         } else {
-            logEl.innerHTML += `<br><strong>🏆 PARABÉNS! Você concluiu todas as missões do Eletricista Pro com excelência!</strong>`;
+            logEl.innerHTML += `<br><strong>🏆 PARABÉNS! Você concluiu todas as missões com excelência e é um Eletricista de Sucesso!</strong>`;
         }
     }
 
@@ -468,3 +434,4 @@
 
 </body>
 </html>
+```
